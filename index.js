@@ -1,5 +1,6 @@
 import * as sdk from "matrix-js-sdk";
 import fetch from "cross-fetch";
+import { safeHtml } from "common-tags";
 
 function must(x, msg) {
   if (!x) {
@@ -13,7 +14,7 @@ const clientConfig = {
   baseUrl: must(process.env.BASE_URL, "specify BASE_URL"),
   accessToken: must(process.env.ACCESS_TOKEN, "specify ACCESS_TOKEN"),
 };
-const feedInterval = process.env.FEED_INTERVAL || 30 * 1000;
+const feedInterval = process.env.FEED_INTERVAL || 60 * 1000;
 const feedRoom = must(process.env.FEED_ROOM, "specify FEED_ROOM");
 const subreddit = must(process.env.SUBREDDIT, "specify SUBREDDIT");
 
@@ -62,7 +63,7 @@ async function announceNewRedditPost(post) {
     msgtype: "m.text",
     body: `${post.title} ${postLink}`,
     format: "org.matrix.custom.html",
-    formatted_body: `<a href="${postLink}">${post.title}</a>`,
+    formatted_body: safeHtml`<a href="${postLink}">${post.title}</a>`,
   });
 }
 
